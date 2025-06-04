@@ -1,0 +1,7 @@
+/vendor/
+/node_modules/
+/.env
+*.log
+composer.lock
+.idea/
+/tests/*.log
