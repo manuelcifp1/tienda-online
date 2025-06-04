@@ -1,1 +1,0 @@
-{"version":1,"defects":{"SeguridadTest::testInitSessionCreaVariableUsuarioSiNoExiste":7},"times":{"SeguridadTest::testInitSessionCreaVariableUsuarioSiNoExiste":0.007,"SeguridadTest::testEsAdminFalsoSiNoHayUsuario":0.001,"SeguridadTest::testEsAdminCiertoSiRolEsAdmin":0.001}}
