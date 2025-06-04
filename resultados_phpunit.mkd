@@ -1,0 +1,22 @@
+compatibilidad de versión php con PHPUnit:
+
+PHPUnit	        Requiere PHP mínimo
+
+PHPUnit 10+  	PHP 8.1 o superior
+PHPUnit 9.x 	PHP 7.3 – 8.2
+PHPUnit 8.x	    PHP 7.2 – 7.4
+
+# Pruebas con PHPUnit
+
+Este proyecto incluye pruebas unitarias usando PHPUnit 12.
+
+- Se prueba la clase `App\Core\Seguridad`
+- Se verifica el sistema de sesiones y el rol de usuario (admin o no)
+- Las pruebas están en `tests/SeguridadTest.php`
+- Para ejecutarlas:  
+  `vendor\bin\phpunit tests`  
+  o  
+  `php composer.phar test` (si se añade como script)
+
+Resultado actual:  
+OK (3 tests, 4 assertions)

@@ -1,0 +1,8 @@
+administrador:
+admin@tienda.com
+admin
+
+clientes:
+<nombre>@correo.com
+1234
+

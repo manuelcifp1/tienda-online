@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.producto {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 180px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.producto img {
+    width: 150px;
+    height: 220px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+button#ver-mas {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
