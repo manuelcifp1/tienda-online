@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Core\Seguridad;
 use App\Core\Database;
+use PDO;
 
 /**
  * Controlador de funcionalidades administrativas
@@ -48,7 +49,7 @@ class AdminController
             ORDER BY productos.id DESC
         ");
 
-        $productos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $titulo = "Gestión de productos";
         ob_start();
@@ -84,7 +85,7 @@ class AdminController
             exit;
         }
         $db = Database::getInstance()->getConnection();
-        $categorias = $db->query("SELECT id, nombre FROM categorias ORDER BY nombre")->fetchAll(\PDO::FETCH_ASSOC);
+        $categorias = $db->query("SELECT id, nombre FROM categorias ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
         $producto = [];
         $modo = 'crear';
         $action = '/tienda-online/public/admin/productos/crear';
@@ -134,7 +135,7 @@ class AdminController
         $stmt->execute([$id]);
         $producto = $stmt->fetch();
 
-        $categorias = $db->query("SELECT id, nombre FROM categorias ORDER BY nombre")->fetchAll(\PDO::FETCH_ASSOC);
+        $categorias = $db->query("SELECT id, nombre FROM categorias ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
 
         $modo = 'editar';
         $action = '/tienda-online/public/admin/productos/editar?id=' . $id;
@@ -163,11 +164,11 @@ class AdminController
 
     public function usuarios()
     {
-        \App\Core\Seguridad::initSession();
-        if (!\App\Core\Seguridad::esAdmin()) exit;
+        Seguridad::initSession();
+        if (!Seguridad::esAdmin()) exit;
 
-        $db = \App\Core\Database::getInstance()->getConnection();
-        $usuarios = $db->query("SELECT * FROM usuarios ORDER BY id DESC")->fetchAll(\PDO::FETCH_ASSOC);
+        $db = Database::getInstance()->getConnection();
+        $usuarios = $db->query("SELECT * FROM usuarios ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 
         $titulo = "Gestión de Usuarios";
         ob_start();
@@ -178,10 +179,10 @@ class AdminController
 
     public function editarUsuario()
     {
-        \App\Core\Seguridad::initSession();
-        if (!\App\Core\Seguridad::esAdmin()) exit;
+        Seguridad::initSession();
+        if (!Seguridad::esAdmin()) exit;
 
-        $db = \App\Core\Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $id = $_GET['id'] ?? 0;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -209,10 +210,10 @@ class AdminController
 
     public function eliminarUsuario()
     {
-        \App\Core\Seguridad::initSession();
-        if (!\App\Core\Seguridad::esAdmin()) exit;
+        Seguridad::initSession();
+        if (!Seguridad::esAdmin()) exit;
 
-        $db = \App\Core\Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $id = $_GET['id'] ?? 0;
 
         $stmt = $db->prepare("DELETE FROM usuarios WHERE id = ?");
@@ -236,7 +237,7 @@ class AdminController
             JOIN usuarios ON compras.usuario_id = usuarios.id
             ORDER BY compras.fecha DESC
         ");
-        $compras = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $compras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Obtener los detalles de cada compra (una consulta por compra)
         foreach ($compras as &$compra) {
@@ -247,7 +248,7 @@ class AdminController
                 WHERE dc.compra_id = ?
             ");
             $stmtDetalle->execute([$compra['id']]);
-            $compra['detalles'] = $stmtDetalle->fetchAll(\PDO::FETCH_ASSOC);
+            $compra['detalles'] = $stmtDetalle->fetchAll(PDO::FETCH_ASSOC);
         }
 
         $titulo = "Gestión de Compras";
@@ -256,9 +257,4 @@ class AdminController
         $contenido = ob_get_clean();
         require __DIR__ . '/../Templates/layout.php';
     }
-
-
-
-
-
 }

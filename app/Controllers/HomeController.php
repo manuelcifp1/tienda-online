@@ -3,7 +3,17 @@
 namespace App\Controllers;
 
 /**
- * Controlador principal (Home)
+ * HomeController
+ * -------------------------
+ * Este es el controlador principal del proyecto.
+ * 
+ * - Controla el acceso inicial a la aplicación (ruta '/')
+ * - Muestra la página de inicio y la lista general de productos
+ * - Actúa como punto de entrada común para usuarios autenticados y no autenticados
+ * - Redirige hacia otras secciones según el flujo de navegación
+ * 
+ * Los demás controladores (AuthController, CarritoController, AdminController, etc.)
+ * son secundarios y gestionan áreas específicas del sistema según el patrón MVC.
  */
 class HomeController
 {

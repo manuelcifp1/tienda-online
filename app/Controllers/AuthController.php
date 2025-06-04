@@ -3,7 +3,6 @@ namespace App\Controllers;
 
 use App\Core\Seguridad;
 use App\Models\Usuario;
-use PDO;
 
 /**
  * Controlador de autenticación (registro y login)
@@ -107,7 +106,7 @@ class AuthController
         require __DIR__ . '/../Templates/layout.php';
     }
 
-        /**
+    /**
      * Cierra la sesión y redirige al inicio
      */
     public function logout()
@@ -116,6 +115,4 @@ class AuthController
         header("Location: /tienda-online/public/");
         exit;
     }
-
-
 }

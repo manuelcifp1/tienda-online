@@ -11,10 +11,22 @@ use PDO;
 class Producto
 {
     /**
-     * Devuelve un array de productos con paginación
-     * @param int $inicio Índice inicial
-     * @param int $limite Cantidad a mostrar
+     * Devuelve productos paginados desde la base de datos
+     *
+     * Equivale a una consulta con LIMIT y OFFSET.
+     * En MySQL, la sintaxis LIMIT :inicio, :limite es equivalente a:
+     *     LIMIT :limite OFFSET :inicio
+     *
+     * Ejemplo de uso:
+     *     Página 1 → $inicio = 0
+     *     Página 2 → $inicio = $limite
+     *     Página 3 → $inicio = 2 * $limite
+     *
+     * @param int $inicio Cuántos registros se deben omitir (offset)
+     * @param int $limite Número máximo de registros a recuperar (limit)
+     * @return array Lista de productos en forma de array asociativo
      */
+
     public function obtenerPaginados(int $inicio, int $limite): array
     {
         $db = Database::getInstance()->getConnection();

@@ -12,7 +12,7 @@ class Router
     private $routes = [];
 
     /**
-     * Método para registrar una ruta
+     * Añade una nueva ruta al router
      * @param string $uri Ruta (por ejemplo "/")
      * @param string $action Controlador y método separados por @ (ej: HomeController@index)
      */

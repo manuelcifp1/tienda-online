@@ -1,5 +1,8 @@
 <?php
 namespace App\Controllers;
+use App\Core\Seguridad;
+use App\Core\Database;
+use PDO;
 
 class CompraController
 {
@@ -14,20 +17,20 @@ class CompraController
 
     public function historial()
     {
-        \App\Core\Seguridad::initSession();
+        Seguridad::initSession();
 
-        if (!\App\Core\Seguridad::estaAutenticado()) {
+        if (!Seguridad::estaAutenticado()) {
             header("Location: /tienda-online/public/login");
             exit;
         }
 
-        $usuario_id = \App\Core\Seguridad::usuarioActual()['id'];
-        $db = \App\Core\Database::getInstance()->getConnection();
+        $usuario_id = Seguridad::usuarioActual()['id'];
+        $db = Database::getInstance()->getConnection();
 
         // Obtenemos compras del usuario
         $stmt = $db->prepare("SELECT * FROM compras WHERE usuario_id = ? ORDER BY fecha DESC");
         $stmt->execute([$usuario_id]);
-        $compras = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $compras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Para cada compra, cargamos sus detalles
         foreach ($compras as &$compra) {
@@ -38,7 +41,7 @@ class CompraController
                 WHERE d.compra_id = ?
             ");
             $stmt->execute([$compra['id']]);
-            $compra['detalles'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $compra['detalles'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         $titulo = "Mis compras";

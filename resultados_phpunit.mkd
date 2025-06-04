@@ -1,9 +1,9 @@
-compatibilidad de versión php con PHPUnit:
+Compatibilidad de versión php con PHPUnit:
 
 PHPUnit	        Requiere PHP mínimo
 
-PHPUnit 10+  	PHP 8.1 o superior
-PHPUnit 9.x 	PHP 7.3 – 8.2
+PHPUnit 10+  	  PHP 8.1 o superior
+PHPUnit 9.x 	  PHP 7.3 – 8.2
 PHPUnit 8.x	    PHP 7.2 – 7.4
 
 # Pruebas con PHPUnit

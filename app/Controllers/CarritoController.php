@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Seguridad;
+use PDO;
 
 /**
  * Controlador para gestionar el carrito
@@ -62,7 +63,7 @@ class CarritoController
             $sql = "SELECT * FROM productos WHERE id IN ($marcadores)";
             $stmt = $db->prepare($sql);
             $stmt->execute($ids);
-            $productos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         $titulo = "Tu carrito";
@@ -123,7 +124,7 @@ class CarritoController
 
         $stmt = $db->prepare("SELECT * FROM productos WHERE id IN ($placeholders)");
         $stmt->execute($ids);
-        $productos = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($productos as $p) {
             $id = $p['id'];

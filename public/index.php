@@ -8,7 +8,7 @@ use App\Core\Router;
 // Creamos una instancia del router personalizado
 $router = new Router();
 
-// ✅ Rutas registradas (mientras no usemos virtual host, deben llevar /tienda-online/public/)
+// Rutas registradas (mientras no usemos virtual host, deben llevar /tienda-online/public/)
 $router->add('/tienda-online/public/', 'HomeController@index');
 $router->add('/tienda-online/public/db-test', 'DbTestController@index');
 $router->add('/tienda-online/public/registro', 'AuthController@registro');
