@@ -1,6 +1,6 @@
 <h2>Gestión de Productos</h2>
 <p><a href="/tienda-online/public/admin/productos/crear">+ Añadir nuevo producto</a></p>
-
+<p><a href="/tienda-online/public/admin">← Volver al panel de administración</a></p>
 <table id="tabla-productos" class="display">
     <thead>
         <tr>
