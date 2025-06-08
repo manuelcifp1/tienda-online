@@ -9,6 +9,7 @@ class Seguridad
 {
     /**
      * Inicia la sesión si no está iniciada
+     * y gestiona la expiración por inactividad
      */
     public static function initSession()
     {
@@ -16,8 +17,17 @@ class Seguridad
             session_start();
         }
 
+        // Destruye sesión tras 30 min de inactividad
+        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > 1800) {
+            session_unset();
+            session_destroy();
+            session_start(); // reiniciar sesión para evitar errores
+        }
+
+        $_SESSION['LAST_ACTIVITY'] = time(); // actualizar tiempo de actividad
+
         if (!isset($_SESSION['usuario'])) {
-        $_SESSION['usuario'] = null;
+            $_SESSION['usuario'] = null;
         }
     }
 
@@ -69,10 +79,12 @@ class Seguridad
         return $_SESSION['usuario'] ?? null;
     }
 
+    /**
+     * Verifica si el usuario actual es administrador
+     */
     public static function esAdmin(): bool
     {
         self::initSession();
         return isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] === 'admin';
     }
-
 }
