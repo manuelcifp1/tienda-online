@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 07-06-2025 a las 20:30:14
+-- Tiempo de generación: 08-06-2025 a las 15:29:42
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.3.14
 
@@ -24,19 +24,19 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `carrito`
+-- Estructura de tabla para la tabla `carritos`
 --
 
-DROP TABLE IF EXISTS `carrito`;
-CREATE TABLE IF NOT EXISTS `carrito` (
+DROP TABLE IF EXISTS `carritos`;
+CREATE TABLE IF NOT EXISTS `carritos` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `usuario_id` int DEFAULT NULL,
-  `producto_id` int DEFAULT NULL,
+  `usuario_id` int NOT NULL,
+  `producto_id` int NOT NULL,
   `cantidad` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `usuario_id` (`usuario_id`),
+  UNIQUE KEY `usuario_id` (`usuario_id`,`producto_id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `detalles_pedidos` (
   PRIMARY KEY (`id`),
   KEY `compra_id` (`pedido_id`),
   KEY `producto_id` (`producto_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `detalles_pedidos`
@@ -91,7 +91,14 @@ INSERT INTO `detalles_pedidos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `p
 (6, 2, 5, 1, 10.99),
 (7, 2, 7, 1, 13.50),
 (8, 5, 2, 1, 11.99),
-(9, 5, 5, 1, 10.99);
+(9, 5, 5, 1, 10.99),
+(10, 6, 2, 1, 11.99),
+(11, 6, 5, 1, 10.99),
+(12, 7, 10, 1, 14.00),
+(13, 7, 20, 1, 9.95),
+(14, 8, 10, 1, 14.00),
+(15, 8, 22, 1, 12.00),
+(16, 8, 24, 1, 13.99);
 
 -- --------------------------------------------------------
 
@@ -107,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   `total` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `pedidos`
@@ -118,7 +125,10 @@ INSERT INTO `pedidos` (`id`, `usuario_id`, `fecha`, `total`) VALUES
 (2, 3, '2025-06-04 11:24:04', 36.99),
 (3, 3, '2025-06-07 19:18:28', 0.00),
 (4, 3, '2025-06-07 19:19:10', 0.00),
-(5, 3, '2025-06-07 19:27:38', 0.00);
+(5, 3, '2025-06-07 19:27:38', 0.00),
+(6, 3, '2025-06-08 12:19:27', 0.00),
+(7, 3, '2025-06-08 12:24:15', 0.00),
+(8, 3, '2025-06-08 15:28:04', 0.00);
 
 -- --------------------------------------------------------
 
@@ -145,15 +155,15 @@ CREATE TABLE IF NOT EXISTS `productos` (
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `categoria_id`, `imagen`) VALUES
 (1, 'Spider-Man: El regreso', 'Una nueva amenaza llega a Nueva York y Peter Parker deberá enfrentarse a sus peores miedos.', 9.99, 19, 1, 'comic2.jpg'),
-(2, 'Batman: Año Uno', 'Los primeros pasos de Bruce Wayne como vigilante en Gotham.', 11.99, 14, 2, 'comic3.jpg'),
+(2, 'Batman: Año Uno', 'Los primeros pasos de Bruce Wayne como vigilante en Gotham.', 11.99, 13, 2, 'comic3.jpg'),
 (3, 'X-Men: Génesis Mortal', 'Los mutantes descubren un oscuro secreto del pasado.', 12.50, 10, 1, 'comic4.jpg'),
 (4, 'Superman: Hijo Rojo', '¿Y si Superman hubiera caído en la URSS en lugar de Kansas?', 13.99, 9, 2, 'comic5.jpg'),
-(5, 'Iron Man: Extremis', 'Tony Stark debe enfrentarse a una tecnología que lo supera.', 10.99, 16, 1, 'comic1.jpg'),
+(5, 'Iron Man: Extremis', 'Tony Stark debe enfrentarse a una tecnología que lo supera.', 10.99, 15, 1, 'comic1.jpg'),
 (6, 'Flash: Punto de Inflexión', 'Barry Allen altera la línea temporal... y lo paga caro.', 11.50, 14, 2, 'comic2.jpg'),
 (7, 'Avengers: Invasión Secreta', '¿Quién es real? ¿Quién es un skrull?', 13.50, 15, 1, 'comic3.jpg'),
 (8, 'Wonder Woman: Renacimiento', 'Diana intenta redescubrir su verdadero origen.', 12.99, 11, 2, 'comic4.jpg'),
 (9, 'Doctor Strange: El juramento', 'Stephen Strange lucha por salvar a su fiel amigo Wong.', 10.50, 20, 1, 'comic5.jpg'),
-(10, 'Green Lantern: Sinestro Corps', 'La guerra de las luces comienza.', 14.00, 8, 2, 'comic1.jpg'),
+(10, 'Green Lantern: Sinestro Corps', 'La guerra de las luces comienza.', 14.00, 6, 2, 'comic1.jpg'),
 (11, 'Deadpool: Masacre Ilimitada', 'Más humor, más violencia, más Deadpool.', 9.99, 25, 1, 'comic2.jpg'),
 (12, 'Aquaman: El trono de Atlantis', 'La guerra entre la superficie y el mar se desata.', 12.75, 13, 2, 'comic3.jpg'),
 (13, 'Guardianes de la Galaxia: Origen', 'Star-Lord reúne a un grupo bastante... disfuncional.', 11.20, 17, 1, 'comic4.jpg'),
@@ -163,11 +173,11 @@ INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `cate
 (17, 'Capitán América: El Soldado de Invierno', 'Bucky ha vuelto... y no es quien solía ser.', 13.00, 10, 1, 'comic3.jpg'),
 (18, 'Shazam!: Poder mágico', 'Billy Batson descubre lo que significa ser héroe.', 10.50, 15, 2, 'comic4.jpg'),
 (19, 'Moon Knight: Locura y redención', 'Marc Spector lidia con sus múltiples identidades.', 11.99, 13, 1, 'comic5.jpg'),
-(20, 'Arrow: Vigilante de Star City', 'Oliver Queen lucha por salvar su ciudad.', 9.95, 18, 2, 'comic1.jpg'),
+(20, 'Arrow: Vigilante de Star City', 'Oliver Queen lucha por salvar su ciudad.', 9.95, 17, 2, 'comic1.jpg'),
 (21, 'Invencible: Primer golpe', 'Un joven con poderes hereda una gran responsabilidad.', 10.50, 14, 3, 'comic2.jpg'),
-(22, 'Saga: Capítulo Uno', 'Una historia de amor y guerra intergaláctica.', 12.00, 16, 3, 'comic3.jpg'),
+(22, 'Saga: Capítulo Uno', 'Una historia de amor y guerra intergaláctica.', 12.00, 15, 3, 'comic3.jpg'),
 (23, 'The Walking Dead: Días pasados', 'Rick despierta en un mundo... muerto.', 11.50, 11, 3, 'comic4.jpg'),
-(24, 'Hellboy: Semilla de destrucción', 'El origen del demonio más carismático de la BPRD.', 13.99, 10, 3, 'comic5.jpg'),
+(24, 'Hellboy: Semilla de destrucción', 'El origen del demonio más carismático de la BPRD.', 13.99, 9, 3, 'comic5.jpg'),
 (25, 'Sandman: Preludios y Nocturnos', 'Neil Gaiman teje un universo de sueños y pesadillas.', 14.50, 9, 3, 'comic1.jpg'),
 (26, 'Kick-Ass: Aprendiendo a pelear', '¿Qué pasa si un adolescente decide ser superhéroe?', 10.90, 20, 3, 'comic2.jpg'),
 (27, 'Spawn: Renacimiento oscuro', 'Al Simmons vuelve del infierno... con sed de venganza.', 13.25, 12, 3, 'comic3.jpg'),

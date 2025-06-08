@@ -13,20 +13,24 @@
         </tr>
         <?php $total = 0; ?>
         <?php foreach ($productos as $p): 
-            $cantidad = $_SESSION['carrito'][$p['id']];
-            $subtotal = $p['precio'] * $cantidad;
+            $subtotal = $p['precio'] * $p['cantidad'];
             $total += $subtotal;
         ?>
             <tr>
                 <td><?= htmlspecialchars($p['nombre']) ?></td>
                 <td><?= number_format($p['precio'], 2) ?> €</td>
-                <td><?= $cantidad ?></td>
+                <td><?= $p['cantidad'] ?></td>
                 <td><?= number_format($subtotal, 2) ?> €</td>
                 <td>
-                    <form method="POST" action="/tienda-online/public/carrito/eliminar">
-                        <input type="hidden" name="producto_id" value="<?= $p['id'] ?>">
-                        <button type="submit">Eliminar</button>
-                    </form>
+                    <td>
+                        <form method="POST" action="/tienda-online/public/carrito/eliminar">
+                            <?php $pid = $p['producto_id'] ?? $p['id']; ?>
+                            <input type="hidden" name="producto_id" value="<?= $pid ?>">
+
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </td>
+
                 </td>
             </tr>
         <?php endforeach; ?>

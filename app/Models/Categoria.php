@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Core\EmptyModel;
+use App\Models\EmptyModel;
 
 class Categoria extends EmptyModel
 {

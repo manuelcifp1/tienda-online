@@ -49,7 +49,8 @@ class PedidoController
         }
 
         $usuario_id = Seguridad::usuarioActual()['id'];
-        $carrito = Carrito::obtenerCarritoDetallado();
+        $carritoModel = new \App\Models\CarritoDB();
+        $carrito = $carritoModel->obtenerCarrito($usuario_id);
 
         if (empty($carrito)) {
             echo "El carrito está vacío.";
@@ -60,10 +61,12 @@ class PedidoController
         $db->beginTransaction();
 
         try {
+            // Insertar pedido
             $stmt = $db->prepare("INSERT INTO pedidos (usuario_id, fecha) VALUES (?, NOW())");
             $stmt->execute([$usuario_id]);
             $pedido_id = $db->lastInsertId();
 
+            // Insertar detalles
             $stmtDetalle = $db->prepare("
                 INSERT INTO detalles_pedidos (pedido_id, producto_id, cantidad, precio_unitario) 
                 VALUES (?, ?, ?, ?)
@@ -72,17 +75,20 @@ class PedidoController
             foreach ($carrito as $item) {
                 $stmtDetalle->execute([
                     $pedido_id,
-                    $item['id'],
+                    $item['producto_id'],
                     $item['cantidad'],
                     $item['precio']
                 ]);
 
+                // Actualizar stock
                 $stmtStock = $db->prepare("UPDATE productos SET stock = stock - ? WHERE id = ?");
-                $stmtStock->execute([$item['cantidad'], $item['id']]);
+                $stmtStock->execute([$item['cantidad'], $item['producto_id']]);
             }
 
             $db->commit();
-            Carrito::vaciar();
+
+            // ✅ Vaciar carrito de BD
+            $carritoModel->vaciar($usuario_id);
 
             header("Location: /tienda-online/public/pedidos/confirmacion");
             exit;
@@ -92,4 +98,5 @@ class PedidoController
             echo "Error al procesar la compra: " . $e->getMessage();
         }
     }
+
 }

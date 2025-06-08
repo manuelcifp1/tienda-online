@@ -16,5 +16,11 @@
             <a href="/tienda-online/public/registro">Registrarse</a>            
         <?php endif; ?>
     </nav>
+    <?php if (Seguridad::esAdmin() && $_SERVER['REQUEST_URI'] !== '/tienda-online/public/admin'): ?>
+        <div style="margin: 1em 0;">
+            <a href="/tienda-online/public/admin">← Volver al Panel de Administración</a>
+        </div>
+    <?php endif; ?>
+
 </header>
 

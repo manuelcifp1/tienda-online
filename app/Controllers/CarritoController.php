@@ -1,31 +1,46 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\Carrito;
 use App\Core\Seguridad;
+use App\Models\Carrito;
+use App\Models\CarritoDB;
 
 class CarritoController
 {
     public function mostrar()
-{
-    \App\Core\Seguridad::initSession();
+    {
+        Seguridad::initSession();
+        $titulo = "Tu carrito";
 
-    $productos = \App\Models\Carrito::obtenerCarritoDetallado();
-    $titulo = "Tu carrito";
+        if (Seguridad::estaAutenticado()) {
+            $modelo = new CarritoDB();
+            $productos = $modelo->obtenerCarrito();
+        } else {
+            $productos = Carrito::obtenerCarritoDetallado();
+        }
 
-    ob_start();
-    require __DIR__ . '/../Views/carrito/ver.php';
-    $contenido = ob_get_clean();
-    require __DIR__ . '/../Templates/layout.php';
-}
-
+        ob_start();
+        require __DIR__ . '/../Views/carrito/ver.php';
+        $contenido = ob_get_clean();
+        require __DIR__ . '/../Templates/layout.php';
+    }
 
     public function agregar()
     {
         Seguridad::initSession();
 
-        if (isset($_POST['producto_id'])) {
-            Carrito::agregar((int)$_POST['producto_id']);
+        if (!isset($_POST['producto_id'])) {
+            header("Location: /tienda-online/public/carrito");
+            exit;
+        }
+
+        $producto_id = (int)$_POST['producto_id'];
+
+        if (Seguridad::estaAutenticado()) {
+            $modelo = new CarritoDB();
+            $modelo->agregarProducto($producto_id);
+        } else {
+            Carrito::agregar($producto_id);
         }
 
         header("Location: /tienda-online/public/carrito");
@@ -36,8 +51,18 @@ class CarritoController
     {
         Seguridad::initSession();
 
-        if (isset($_POST['producto_id'])) {
-            Carrito::eliminar((int)$_POST['producto_id']);
+        if (!isset($_POST['producto_id'])) {
+            header("Location: /tienda-online/public/carrito");
+            exit;
+        }
+
+        $producto_id = (int)$_POST['producto_id'];
+
+        if (Seguridad::estaAutenticado()) {
+            $modelo = new CarritoDB();
+            $modelo->eliminarProducto($producto_id);
+        } else {
+            Carrito::eliminar($producto_id);
         }
 
         header("Location: /tienda-online/public/carrito");
@@ -47,7 +72,14 @@ class CarritoController
     public function vaciar()
     {
         Seguridad::initSession();
-        Carrito::vaciar();
+
+        if (Seguridad::estaAutenticado()) {
+            $modelo = new CarritoDB();
+            $modelo->vaciar();
+        } else {
+            Carrito::vaciar();
+        }
+
         header("Location: /tienda-online/public/carrito");
         exit;
     }
