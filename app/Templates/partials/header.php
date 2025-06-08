@@ -9,7 +9,7 @@
 
         <?php if (Seguridad::estaAutenticado()): ?>
             <span>Hola, <?= Seguridad::usuarioActual()['nombre'] ?></span>
-            <a href="/tienda-online/public/compras/historial">Mis compras</a>
+            <a href="/tienda-online/public/pedidos/historial">Mis pedidos</a>
             <a href="/tienda-online/public/logout">Cerrar sesión</a>
         <?php else: ?>
             <a href="/tienda-online/public/login">Iniciar sesión</a>

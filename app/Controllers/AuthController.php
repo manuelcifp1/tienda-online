@@ -1,117 +1,75 @@
 <?php
 namespace App\Controllers;
 
-use App\Core\Seguridad;
 use App\Models\Usuario;
+use App\Core\Seguridad;
 
-/**
- * Controlador de autenticación (registro y login)
- */
 class AuthController
 {
-    /**
-     * Muestra el formulario de registro o procesa el envío
-     */
     public function registro()
     {
-        // Si se ha enviado el formulario
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Sanitizamos y recogemos datos del formulario
-            $nombre  = Seguridad::limpiar($_POST['nombre'] ?? '');
-            $email   = Seguridad::limpiar($_POST['email'] ?? '');
-            $clave   = $_POST['password'] ?? '';
-            $rol     = 'cliente';
+            $nombre = $_POST['nombre'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
 
-            // Validaciones simples
-            $errores = [];
+            $usuarioModel = new Usuario();
+            $existe = $usuarioModel->buscarPorEmail($email);
 
-            if (empty($nombre)) $errores[] = "El nombre es obligatorio.";
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errores[] = "El email no es válido.";
-            if (strlen($clave) < 4) $errores[] = "La contraseña debe tener al menos 4 caracteres.";
-
-            if (empty($errores)) {
-                // Creamos el usuario
-                $usuario = new Usuario();
-                $resultado = $usuario->crear($nombre, $email, $clave, $rol);
-
-                if ($resultado === true) {
-                    // Redirigimos al login o a la página principal
-                    header("Location: /tienda-online/public/");
-                    exit;
-                } else {
-                    $errores[] = $resultado;
-                }
+            if (!$existe) {
+                $usuarioModel->registrar($nombre, $email, $password);
+                header("Location: /tienda-online/public/login");
+                exit;
             }
 
-            // Si hay errores, los pasamos a la vista
-            $data = ['errores' => $errores, 'nombre' => $nombre, 'email' => $email];
-        } else {
-            $data = ['errores' => []];
+            $error = "El usuario ya existe.";
         }
 
-        // Plantilla + vista con buffer
-        $titulo = "Registro de Usuario";
+        $titulo = "Registro";
+
         ob_start();
         require __DIR__ . '/../Views/auth/registro.php';
         $contenido = ob_get_clean();
         require __DIR__ . '/../Templates/layout.php';
     }
 
-        /**
-     * Muestra el formulario de login o procesa el envío
-     */
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email  = Seguridad::limpiar($_POST['email'] ?? '');
-            $clave  = $_POST['password'] ?? '';
-            $errores = [];
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
 
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errores[] = "Email no válido.";
-            if (empty($clave)) $errores[] = "La contraseña es obligatoria.";
+            $usuarioModel = new Usuario();
+            $usuario = $usuarioModel->buscarPorEmail($email);
 
-            if (empty($errores)) {
-                $usuarioModel = new Usuario();
-                $usuario = $usuarioModel->buscarPorEmail($email);
+            if ($usuario && password_verify($password, $usuario['password'])) {
+                Seguridad::initSession();
+                $_SESSION['usuario'] = $usuario;
 
-                if ($usuario && password_verify($clave, $usuario['password'])) {
-                    // Login correcto: guardamos en sesión
-                    Seguridad::guardarUsuario([
-                        'id' => $usuario['id'],
-                        'nombre' => $usuario['nombre'],
-                        'email' => $usuario['email'],
-                        'rol' => $usuario['rol']
-                    ]);
-                    if ($_SESSION['usuario']['rol'] === 'admin') {
-                        header("Location: /tienda-online/public/admin");
-                    } else {
-                        header("Location: /tienda-online/public/productos");
-                    }
-                    exit;
-
+                // Redirigir según rol
+                if ($usuario['rol'] === 'admin') {
+                    header("Location: /tienda-online/public/admin");
                 } else {
-                    $errores[] = "Credenciales incorrectas.";
+                    header("Location: /tienda-online/public/productos");
                 }
+                exit;
             }
 
-            $data = ['errores' => $errores, 'email' => $email];
-        } else {
-            $data = ['errores' => []];
+            $error = "Credenciales incorrectas.";
         }
 
-        $titulo = "Inicio de sesión";
+        $titulo = "Iniciar sesión";
+
         ob_start();
         require __DIR__ . '/../Views/auth/login.php';
         $contenido = ob_get_clean();
         require __DIR__ . '/../Templates/layout.php';
     }
 
-    /**
-     * Cierra la sesión y redirige al inicio
-     */
     public function logout()
     {
-        Seguridad::cerrarSesion();
+        Seguridad::initSession();
+        session_destroy();
         header("Location: /tienda-online/public/");
         exit;
     }

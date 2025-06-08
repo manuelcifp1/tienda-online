@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 04-06-2025 a las 11:19:34
+-- Tiempo de generación: 07-06-2025 a las 20:30:14
 -- Versión del servidor: 9.1.0
 -- Versión de PHP: 8.3.14
 
@@ -63,53 +63,62 @@ INSERT INTO `categorias` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `compras`
+-- Estructura de tabla para la tabla `detalles_pedidos`
 --
 
-DROP TABLE IF EXISTS `compras`;
-CREATE TABLE IF NOT EXISTS `compras` (
+DROP TABLE IF EXISTS `detalles_pedidos`;
+CREATE TABLE IF NOT EXISTS `detalles_pedidos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `pedido_id` int NOT NULL,
+  `producto_id` int NOT NULL,
+  `cantidad` int NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `compra_id` (`pedido_id`),
+  KEY `producto_id` (`producto_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalles_pedidos`
+--
+
+INSERT INTO `detalles_pedidos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `precio_unitario`) VALUES
+(1, 1, 1, 1, 9.99),
+(2, 1, 3, 1, 12.50),
+(3, 1, 4, 1, 13.99),
+(4, 1, 10, 1, 14.00),
+(5, 2, 3, 1, 12.50),
+(6, 2, 5, 1, 10.99),
+(7, 2, 7, 1, 13.50),
+(8, 5, 2, 1, 11.99),
+(9, 5, 5, 1, 10.99);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidos`
+--
+
+DROP TABLE IF EXISTS `pedidos`;
+CREATE TABLE IF NOT EXISTS `pedidos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `usuario_id` int NOT NULL,
   `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `total` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `usuario_id` (`usuario_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `compras`
+-- Volcado de datos para la tabla `pedidos`
 --
 
-INSERT INTO `compras` (`id`, `usuario_id`, `fecha`, `total`) VALUES
-(1, 1, '2025-06-04 08:16:53', 50.48);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `detalles_compra`
---
-
-DROP TABLE IF EXISTS `detalles_compra`;
-CREATE TABLE IF NOT EXISTS `detalles_compra` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `compra_id` int NOT NULL,
-  `producto_id` int NOT NULL,
-  `cantidad` int NOT NULL,
-  `precio_unitario` decimal(10,2) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `compra_id` (`compra_id`),
-  KEY `producto_id` (`producto_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `detalles_compra`
---
-
-INSERT INTO `detalles_compra` (`id`, `compra_id`, `producto_id`, `cantidad`, `precio_unitario`) VALUES
-(1, 1, 1, 1, 9.99),
-(2, 1, 3, 1, 12.50),
-(3, 1, 4, 1, 13.99),
-(4, 1, 10, 1, 14.00);
+INSERT INTO `pedidos` (`id`, `usuario_id`, `fecha`, `total`) VALUES
+(1, 1, '2025-06-04 08:16:53', 50.48),
+(2, 3, '2025-06-04 11:24:04', 36.99),
+(3, 3, '2025-06-07 19:18:28', 0.00),
+(4, 3, '2025-06-07 19:19:10', 0.00),
+(5, 3, '2025-06-07 19:27:38', 0.00);
 
 -- --------------------------------------------------------
 
@@ -136,12 +145,12 @@ CREATE TABLE IF NOT EXISTS `productos` (
 
 INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `stock`, `categoria_id`, `imagen`) VALUES
 (1, 'Spider-Man: El regreso', 'Una nueva amenaza llega a Nueva York y Peter Parker deberá enfrentarse a sus peores miedos.', 9.99, 19, 1, 'comic2.jpg'),
-(2, 'Batman: Año Uno', 'Los primeros pasos de Bruce Wayne como vigilante en Gotham.', 11.99, 15, 2, 'comic3.jpg'),
-(3, 'X-Men: Génesis Mortal', 'Los mutantes descubren un oscuro secreto del pasado.', 12.50, 11, 1, 'comic4.jpg'),
+(2, 'Batman: Año Uno', 'Los primeros pasos de Bruce Wayne como vigilante en Gotham.', 11.99, 14, 2, 'comic3.jpg'),
+(3, 'X-Men: Génesis Mortal', 'Los mutantes descubren un oscuro secreto del pasado.', 12.50, 10, 1, 'comic4.jpg'),
 (4, 'Superman: Hijo Rojo', '¿Y si Superman hubiera caído en la URSS en lugar de Kansas?', 13.99, 9, 2, 'comic5.jpg'),
-(5, 'Iron Man: Extremis', 'Tony Stark debe enfrentarse a una tecnología que lo supera.', 10.99, 18, 1, 'comic1.jpg'),
+(5, 'Iron Man: Extremis', 'Tony Stark debe enfrentarse a una tecnología que lo supera.', 10.99, 16, 1, 'comic1.jpg'),
 (6, 'Flash: Punto de Inflexión', 'Barry Allen altera la línea temporal... y lo paga caro.', 11.50, 14, 2, 'comic2.jpg'),
-(7, 'Avengers: Invasión Secreta', '¿Quién es real? ¿Quién es un skrull?', 13.50, 16, 1, 'comic3.jpg'),
+(7, 'Avengers: Invasión Secreta', '¿Quién es real? ¿Quién es un skrull?', 13.50, 15, 1, 'comic3.jpg'),
 (8, 'Wonder Woman: Renacimiento', 'Diana intenta redescubrir su verdadero origen.', 12.99, 11, 2, 'comic4.jpg'),
 (9, 'Doctor Strange: El juramento', 'Stephen Strange lucha por salvar a su fiel amigo Wong.', 10.50, 20, 1, 'comic5.jpg'),
 (10, 'Green Lantern: Sinestro Corps', 'La guerra de las luces comienza.', 14.00, 8, 2, 'comic1.jpg'),

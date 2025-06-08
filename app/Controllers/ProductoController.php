@@ -5,15 +5,40 @@ use App\Models\Producto;
 
 class ProductoController
 {
-    /**
-     * Muestra la vista principal de productos
-     */
     public function listado()
     {
-        $modelo = new Producto();
-        $productos = $modelo->obtenerPaginados(0, 10); // primeros 10
+        $pagina = $_GET['pagina'] ?? 1;
+        $limite = 10;
+        $inicio = ($pagina - 1) * $limite;
 
-        $titulo = "Productos";
+        $productoModel = new Producto();
+        $productos = $productoModel->obtenerPaginados($inicio, $limite);
+
+        $titulo = "Catálogo de productos";
+
+        ob_start();
+        require __DIR__ . '/../Views/productos/listado.php';
+        $contenido = ob_get_clean();
+        require __DIR__ . '/../Templates/layout.php';
+    }
+
+    public function buscar()
+    {
+        $termino = $_GET['q'] ?? '';
+        $productoModel = new Producto();
+        $resultados = $productoModel->buscarPorNombre($termino);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultados);
+    }
+
+    public function porCategoria($categoriaId)
+    {
+        $productoModel = new Producto();
+        $productos = $productoModel->obtenerPorCategoria($categoriaId);
+
+        $titulo = "Productos por categoría";
+
         ob_start();
         require __DIR__ . '/../Views/productos/listado.php';
         $contenido = ob_get_clean();

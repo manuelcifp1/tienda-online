@@ -35,9 +35,8 @@
             <td><strong><?= number_format($total, 2) ?> €</strong></td>
         </tr>
     </table>
-    <form method="POST" action="/tienda-online/public/carrito/comprar">
+
+    <form action="/tienda-online/public/pedidos/procesar" method="post">
         <button type="submit">Finalizar compra</button>
     </form>
-
-
 <?php endif; ?>

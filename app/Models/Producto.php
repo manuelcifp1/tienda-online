@@ -1,42 +1,95 @@
 <?php
 namespace App\Models;
 
-use App\Core\Database;
 use PDO;
 
-/**
- * Modelo Producto
- * Se encarga de recuperar productos desde la BD
- */
-class Producto
+class Producto extends EmptyModel
 {
-    /**
-     * Devuelve productos paginados desde la base de datos
-     *
-     * Equivale a una consulta con LIMIT y OFFSET.
-     * En MySQL, la sintaxis LIMIT :inicio, :limite es equivalente a:
-     *     LIMIT :limite OFFSET :inicio
-     *
-     * Ejemplo de uso:
-     *     Página 1 → $inicio = 0
-     *     Página 2 → $inicio = $limite
-     *     Página 3 → $inicio = 2 * $limite
-     *
-     * @param int $inicio Cuántos registros se deben omitir (offset)
-     * @param int $limite Número máximo de registros a recuperar (limit)
-     * @return array Lista de productos en forma de array asociativo
-     */
+    protected string $tabla = 'productos';
 
     public function obtenerPaginados(int $inicio, int $limite): array
     {
-        $db = Database::getInstance()->getConnection();
-
-        $sql = "SELECT * FROM productos LIMIT :inicio, :limite";
-        $stmt = $db->prepare($sql);
+        $stmt = $this->db->prepare("SELECT * FROM productos LIMIT :inicio, :limite");
         $stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
         $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function buscarPorNombre(string $nombre): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM productos WHERE nombre LIKE ?");
+        $stmt->execute(["%$nombre%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerPorCategoria(int $categoriaId): array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM productos WHERE categoria_id = ?");
+        $stmt->execute([$categoriaId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerPorId(int $id): ?array
+    {
+        $resultado = $this->find($id, $this->tabla);
+        return is_array($resultado) ? $resultado : null;
+    }
+
+    public function getAll(): array
+    {
+        return $this->findAll($this->tabla);
+    }
+
+    public function crear(array $datos, array $archivos): bool
+    {
+        $imagen = $this->procesarImagen($archivos['imagen'] ?? null);
+        $stmt = $this->db->prepare("INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen) VALUES (?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([
+            $datos['nombre'],
+            $datos['descripcion'],
+            $datos['precio'],
+            $datos['stock'],
+            $datos['categoria_id'],
+            $imagen
+        ]);
+    }
+
+    public function actualizar(array $datos, array $archivos): bool
+    {
+        $imagen = $this->procesarImagen($archivos['imagen'] ?? null, $datos['imagen_actual'] ?? null);
+        $stmt = $this->db->prepare("UPDATE productos SET nombre=?, descripcion=?, precio=?, stock=?, categoria_id=?, imagen=? WHERE id=?");
+        return $stmt->execute([
+            $datos['nombre'],
+            $datos['descripcion'],
+            $datos['precio'],
+            $datos['stock'],
+            $datos['categoria_id'],
+            $imagen,
+            $datos['id']
+        ]);
+    }
+
+    public function getById($id): ?array
+    {
+        return $this->find($id, $this->tabla);
+    }
+
+    public function eliminar($id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM productos WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
+    private function procesarImagen(?array $archivo, ?string $existente = null): ?string
+    {
+        if ($archivo && $archivo['error'] === UPLOAD_ERR_OK) {
+            $nombre = basename($archivo['name']);
+            $destino = __DIR__ . '/../../public/img/' . $nombre;
+            move_uploaded_file($archivo['tmp_name'], $destino);
+            return $nombre;
+        }
+        return $existente;
+    }
+
 }

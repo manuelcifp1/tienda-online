@@ -27,17 +27,27 @@ class Router
      */
     public function dispatch($uri)
     {
-        // Extrae solo la parte del path de la URL (sin parámetros)
+        // Obtener sólo la parte del path de la URL
         $uri = parse_url($uri, PHP_URL_PATH);
 
+        //Elimina el path base
+        $basePath = '/tienda-online/public';
+        if (str_starts_with($uri, $basePath)) {
+            $uri = substr($uri, strlen($basePath));
+        }
+
+        //Elimina slash final
+        $uri = rtrim($uri, '/') ?: '/';
+
+        // Ejecutar si existe
         if (isset($this->routes[$uri])) {
-            // Si la ruta existe, ejecuta la acción
             $this->executeAction($this->routes[$uri]);
         } else {
-            // Ruta no encontrada
             echo "404 - Página no encontrada";
         }
     }
+
+
 
     /**
      * Ejecuta el controlador y el método especificado

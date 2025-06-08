@@ -1,11 +1,9 @@
 RewriteEngine On
-# Activa el motor de reescritura de URLs
-
+RewriteBase /tienda-online/public/
 RewriteCond %{REQUEST_FILENAME} !-f
-# Si el archivo solicitado NO existe físicamente...
-
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
-# Redirige la petición a index.php (controlador frontal)
-# QSA: añade los parámetros originales
-# L: última regla si coincide
+
+
+
 
