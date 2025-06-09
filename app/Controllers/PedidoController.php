@@ -50,7 +50,7 @@ class PedidoController
 
         $usuario_id = Seguridad::usuarioActual()['id'];
         $carritoModel = new \App\Models\CarritoDB();
-        $carrito = $carritoModel->obtenerCarrito($usuario_id);
+        $carrito = $carritoModel->obtenerCarrito();
 
         if (empty($carrito)) {
             echo "El carrito está vacío.";
@@ -88,7 +88,7 @@ class PedidoController
             $db->commit();
 
             // ✅ Vaciar carrito de BD
-            $carritoModel->vaciar($usuario_id);
+            $carritoModel->vaciar();
 
             header("Location: /tienda-online/public/pedidos/confirmacion");
             exit;
