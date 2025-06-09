@@ -61,7 +61,7 @@ class Router
         $controllerClass = "App\\Controllers\\$controller";
 
         if (class_exists($controllerClass)) {
-            $obj = new $controllerClass();
+            $obj = new $controllerClass();//Aquí se instancia al controlador.
 
             if (method_exists($obj, $method)) {
                 $obj->$method(); // Llamada al método del controlador

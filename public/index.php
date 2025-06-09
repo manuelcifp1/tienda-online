@@ -1,4 +1,5 @@
 <?php
+//Controlador frontal del proyecto
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Router;
