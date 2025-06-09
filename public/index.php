@@ -6,7 +6,7 @@ use App\Core\Router;
 $router = new Router();
 
 // Rutas limpias sin /tienda-online/public
-$router->add('/', 'HomeController@index');
+$router->add('/', 'InicioController@index');
 
 $router->add('/registro', 'AuthController@registro');
 $router->add('/login', 'AuthController@login');
