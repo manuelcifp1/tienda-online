@@ -3,9 +3,9 @@ namespace App\Controllers;
 
 // Importar clases externas correctamente (fuera de la clase)
 use App\Models\Pedido;
-use App\Models\Carrito;
 use App\Core\Database;
 use App\Core\Seguridad;
+use App\Models\CarritoDB;
 
 class PedidoController
 {
@@ -49,7 +49,7 @@ class PedidoController
         }
 
         $usuario_id = Seguridad::usuarioActual()['id'];
-        $carritoModel = new \App\Models\CarritoDB();
+        $carritoModel = new CarritoDB();
         $carrito = $carritoModel->obtenerCarrito();
 
         if (empty($carrito)) {
